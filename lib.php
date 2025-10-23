@@ -1,8 +1,9 @@
 <?php
-    require('dbconn.php');
-
+    // Получение информации по региону
     function get_region_data($region_code)
     {
+        require('dbconn.php');
+
         $conn = new mysqli($DBHost, $DBLogin, $DBPassword, $DBName);
         if($conn->connect_error){
             echo "Ошибка: " . $conn->connect_error;
