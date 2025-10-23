@@ -6,13 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Алкотаймер</title>
   <!-- Open Graph Generated: a.pr-cy.ru -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Алкотаймер">
-  <meta property="og:description" content="Таймер оставшегося времени до окончания продажи алкоголя">
+   <meta property="og:type" content="website">
+<?php
+  require('lib.php');
+
+  $region_code =  $_GET['region'];
+  $region_name = '';
+  if (!empty($region_code)){
+    $region_data = get_region_data($region_code);
+    $region_name = $region_data['name'];
+  }
+
+  $title = 'Алкотаймер';
+  $description = 'Таймер оставшегося времени до окончания продажи алкоголя';
+  if (!empty($region_name)) {
+    $title = 'Алкотаймер - '.$region_name;
+    list($timer, $beforeDeadline) = get_timer($region_code);
+    $timerString = $timer->format('%H').':'.$timer->format('%I').':'.$timer->format('%S');
+    $description = 'До начала продажи алкоголя: '.$timerString;
+    if ($beforeDeadline) {
+      $description = 'До окончания продажи алкоголя: '.$timerString;
+    }
+  } 
+
+  echo '<meta property="og:title" content="'.$title.'">';
+  echo '<meta property="og:description" content="'.$description.'">';
+?>
   <meta property="og:url" content="https://alcotimer.ru/">
   <meta property="og:image" content="https://alcotimer.ru/favicon.png">
   <meta property="og:site_name" content="Алкотаймер">
   <meta property="og:locale" content="ru_RU">
+
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="style3.css">
 </head>
