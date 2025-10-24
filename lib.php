@@ -1,4 +1,25 @@
 <?php
+    // Получение региона по кладр
+    function get_region_code_by_kladr($kladr)
+    {
+        require('dbconn.php');
+
+        $conn = new mysqli($DBHost, $DBLogin, $DBPassword, $DBName);
+        if($conn->connect_error){
+            echo "Ошибка: " . $conn->connect_error;
+        }
+
+        $sql = "SELECT code FROM `regions` WHERE kladr = '" . $kladr . "'";
+        if($result = $conn->query($sql)){
+            $retval = mysqli_fetch_assoc($result);
+            $result->free();
+        } else{
+            echo "Ошибка: " . $conn->error;
+        }
+        $conn->close();   
+        return $retval['code'];
+    }
+
     // Получение информации по региону
     function get_region_data($region_code)
     {
