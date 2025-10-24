@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const elHours = document.querySelector('.timer__hours');
   const elMinutes = document.querySelector('.timer__minutes');
   const elSeconds = document.querySelector('.timer__seconds');
+  const location = document.querySelector('.location');
+  location.addEventListener('click', function() {
+      getCurrentGeolocation();
+    });
 
   // Получаем сохранненый регион
   var region = localStorage.getItem('region');
@@ -32,7 +36,83 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
         console.error('Ошибка при получение справочника регионов: ', error);
     });
+  var geo_options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
+
+  function geo_success(pos) {
+    var crd = pos.coords;
+    getRedionByLatAndLon(crd.latitude, crd.longitude)
+  }
+
+  function geo_error(err) {
+    getRegionByIP();
+  }
   
+  // Получение геолокации
+  const getCurrentGeolocation = () =>
+  {
+    if (navigator.geolocation)
+    {
+      navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+    } else
+    {
+      getRegionByIP();
+    };
+  }  
+
+  // Поулчение региона по геолокации
+  const getRedionByLatAndLon = async ({lat, lon}) =>
+  {
+    if (!lat || !lon) return '';
+    
+    // Получение региона
+    fetch('get_region_by_lat_lon.php?lat='+lat+'&lon='+lon) 
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Проблемы с сетью');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Если так и не смогли определить, то по умолчанию Москва
+          if (!data.region_code) {
+            data.region_code = 'Moscow'
+          }
+          
+          changeRegion(data.region_code);
+      })
+      .catch(error => {
+          console.error('Ошибка при получение региона по IP: ', error);
+      });
+  }
+
+  // Получение региона по ip
+  function getRegionByIP () {
+    // Получение региона
+    fetch('get_region_by_ip.php') 
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Проблемы с сетью');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Если так и не смогли определить, то по умолчанию Москва
+          if (!data.region_code) {
+            data.region_code = 'Moscow'
+          }
+          
+          changeRegion(data.region_code);
+      })
+      .catch(error => {
+          console.error('Ошибка при получение региона по IP: ', error);
+      });    
+  }
+
+
   // Функция смены региона
   const changeRegion = (newRegion) => {
       region = newRegion;
@@ -142,13 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Если региона нет, то пробуем его определить
   if (!region) {
-    
-    // Если так и не смогли определить, то по умолчанию Москва
-    if (!region) {
-      region = 'Moscow'
-    }
-    
-    changeRegion(region);
+
+    // определяем регион по ip
+    getRegionByIP();
   }
 
   getDeadline(region)
