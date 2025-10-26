@@ -44,12 +44,12 @@
 <body>
   <div class="header">
     <div class="title">
-      <img src="svg/cocktail.svg" alt="Алкотаймер" width="64" height="64">
+      <img src="svg/cocktail.svg" type="image/svg+xml" alt="Алкотаймер" width="64" height="64">
       Алкотаймер
     </div>
     <div class="region">
       <a id="location" href="javascript:void(0);">
-        <img src="svg/location.svg" alt="Геолокация" width="32" height="32">
+        <object type="image/svg+xml" data="svg/location.svg" width="32" height="32" style="pointer-events: none;"></object>
       </a>
       <select name="region" id="region-select"></select>
     </div>    

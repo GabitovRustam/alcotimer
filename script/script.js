@@ -44,6 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
     maximumAge: 0,
   };
 
+  // Произведена геолокация
+  function geolocated(){
+    document.querySelector('#location object').data = "svg/location-on.svg";
+    document.querySelector("#location object").getSVGDocument().querySelector("path").setAttribute("fill", "#000000")
+  }
+
+  // Отмена геолокации
+  function not_geolocated(){
+    document.querySelector('#location object').data = "svg/location.svg";
+    document.querySelector("#location object").getSVGDocument().querySelector("path").setAttribute("fill", "#000000")
+  }
+
+  // Ошибка геолокации
+  function error_geolocated(){
+    document.querySelector('#location object').data = "svg/location.svg";
+    document.querySelector("#location object").getSVGDocument().querySelector("path").setAttribute("fill", "#500000")
+  }
+
   function geo_success(pos) {
     var crd = pos.coords;
     getRedionByLatAndLon(crd.latitude, crd.longitude)
@@ -66,9 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }  
 
   // Поулчение региона по геолокации
-  const getRedionByLatAndLon = async ({lat, lon}) =>
+  const getRedionByLatAndLon = (lat, lon) =>
   {
-    if (!lat || !lon) return '';
+    if (!lat || !lon) {
+      error_geolocated();
+      return '';
+    }
     
     // Получение региона
     fetch('get_region_by_lat_lon.php?lat='+lat+'&lon='+lon) 
@@ -83,10 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!data.region_code) {
             data.region_code = 'Moscow'
           }
-          
+
           changeRegion(data.region_code);
+          geolocated();
       })
       .catch(error => {
+          error_geolocated();
           console.error('Ошибка при получение региона по IP: ', error);
       });
   }
@@ -108,8 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           
           changeRegion(data.region_code);
+          geolocated();
       })
       .catch(error => {
+          error_geolocated();
           console.error('Ошибка при получение региона по IP: ', error);
       });    
   }
@@ -210,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   selectRegion.addEventListener('change', function() {
       changeRegion(this.value);
+      not_geolocated();
     });
     
   // Получаем регион из параметров
