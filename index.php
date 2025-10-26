@@ -33,24 +33,24 @@
   echo '<meta property="og:description" content="'.$description.'">';
 ?>
   <meta property="og:url" content="https://alcotimer.ru/">
-  <meta property="og:image" content="https://alcotimer.ru/favicon.png">
+  <meta property="og:image" content="https://alcotimer.ru/svg/cocktail.svg">
   <meta property="og:site_name" content="Алкотаймер">
   <meta property="og:locale" content="ru_RU">
 
-  <link rel="icon" href="favicon.png" type="image/png">
-  <link rel="stylesheet" href="style3.css">
+  <link rel="icon" href="svg/cocktail.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style/style.css">
 </head>
 
 <body>
   <div class="header">
     <div class="title">
-      <img src="favicon.png" alt="Алкотаймер" width="64" height="64">
+      <img src="svg/cocktail.svg" alt="Алкотаймер" width="64" height="64">
       Алкотаймер
     </div>
     <div class="region">
-      <svg class="location" viewBox="0 0 24 24">
-        <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4m8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7"></path>
-      </svg>
+      <a id="location" href="javascript:void(0);">
+        <img src="svg/location.svg" alt="Геолокация" width="32" height="32">
+      </a>
       <select name="region" id="region-select"></select>
     </div>    
   </div>
@@ -65,14 +65,11 @@
     </div>
   </div>
   <div class="footer">
-	<div class="footer-item">
-		2025 <a href="mailto:gabitov_rustam@mail.ru">Рустам Габитов</a>
-	</div>
-	<div class="footer-item">
-		<a href="https://www.flaticon.com/ru/free-icons/-" title="Время и дата иконки">Время и дата иконки от Metami septiana - Flaticon</a>
-	</div>
+    <div class="footer-item">
+      2025 <a href="mailto:gabitov_rustam@mail.ru">Рустам Габитов</a>
+    </div>
   </div>
-  <script src="script.js"></script>
+  <script src="script/script.js"></script>
 </body>
 
 </html>

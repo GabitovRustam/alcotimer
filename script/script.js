@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const elHours = document.querySelector('.timer__hours');
   const elMinutes = document.querySelector('.timer__minutes');
   const elSeconds = document.querySelector('.timer__seconds');
-  const location = document.querySelector('.location');
+  const location = document.getElementById('location');
+  
   location.addEventListener('click', function() {
       getCurrentGeolocation();
     });
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
         console.error('Ошибка при получение справочника регионов: ', error);
     });
+
   var geo_options = {
     enableHighAccuracy: true,
     timeout: 5000,
