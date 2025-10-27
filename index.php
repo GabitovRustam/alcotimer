@@ -42,6 +42,9 @@
 </head>
 
 <body>
+  <div class="back">
+    <object type="image/svg+xml" data="svg/russia.svg"></object>
+  </div>
   <div class="header">
     <div class="title">
       <img src="svg/cocktail.svg" type="image/svg+xml" alt="Алкотаймер" width="64" height="64">

@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data.forEach((obj) => {
           var newOption = new Option(obj.name, obj.code);
           selectRegion.add(newOption);
+          regions.set(obj.code, { name: obj.name, svg: obj.svg });
         });
 
     })
@@ -143,14 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция смены региона
   const changeRegion = (newRegion) => {
       region = newRegion;
-      selectRegion.value = region
+      selectRegion.value = region;
       // Сохраняем регион
       localStorage.setItem('region', region);
       // Меняем URL
-      var path = '/index.php?region='+region+'&id='+Math.floor(Date.now() / 1000)
-      var title = 'Алкотаймер - ' + region
+      var path = '/index.php?region='+region+'&id='+Math.floor(Date.now() / 1000);
+      var title = 'Алкотаймер - ' + region;
       if (regions.has(region)) {
-        title = 'Алкотаймер - ' + regions.get(region).name
+        title = 'Алкотаймер - ' + regions.get(region).name;
       }
       document.title = title
       getDeadline(region)
@@ -181,7 +182,43 @@ document.addEventListener('DOMContentLoaded', () => {
           beforeDeadline = data.beforeDeadline;
           // Корректируем
           deadline.setMinutes(deadline.getMinutes() + nowTimezone);
-      })
+
+          if (regions.has(region)) {
+            const svgElement = document.querySelector(".back object").getSVGDocument();
+            if (svgElement) {
+              const pathElements = svgElement.querySelectorAll('path');
+              pathElements.forEach(path => {
+                path.removeAttribute("style");
+              })
+
+              if (beforeDeadline) {
+                svgElement.getElementById(regions.get(region).svg).setAttribute("style", "fill:#EEFFEE;stroke-width:0.5px;");
+              } else {
+                svgElement.getElementById(regions.get(region).svg).setAttribute("style", "fill:#FFEEEE;stroke-width:0.5px;");
+              }
+              
+              const elbox = document.querySelector(".back").getBoundingClientRect()
+              const bbox = svgElement.getElementById(regions.get(region).svg).getBBox();
+              bbox.x = bbox.x - 0.3*bbox.width - 1.0437;
+              bbox.y = bbox.y - 0.3*bbox.height - 8.2168;
+              bbox.width = bbox.width + 0.6*bbox.width;
+              bbox.height = bbox.height + 0.6*bbox.height;
+              ratio_width = bbox.width/elbox.width;
+              ratio_height = bbox.height/elbox.height;
+              if (ratio_width < ratio_height) {
+                old_width = bbox.width
+                bbox.width = bbox.height * elbox.width / elbox.height;
+                bbox.x =  bbox.x - (bbox.width  - old_width) / 2;
+              } else {
+                old_height = bbox.height
+                bbox.height = bbox.width * elbox.height / elbox.width;
+                bbox.y =  bbox.y - (bbox.height  - old_height) / 2;
+              }
+              svgElement.getElementById("Layer_1").setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+              svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");
+            }
+          }
+    })
       .catch(error => {
           console.error('Ошибка при получение таймера региона: ', error);
       });

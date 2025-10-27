@@ -51,7 +51,7 @@
             echo "Ошибка: " . $conn->connect_error;
         }
 
-        $sql = "SELECT code, `name` FROM `regions` order by `name`";
+        $sql = "SELECT code, `name`, svg FROM `regions` order by `name`";
         if($result = $conn->query($sql)){
             $retval = $result->fetch_all(MYSQLI_ASSOC);
             $result->free();
