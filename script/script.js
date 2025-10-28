@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Сохраняем регион
       localStorage.setItem('region', region);
       // Меняем URL
-      var path = '/index.php?region='+region+'&id='+Math.floor(Date.now() / 1000);
+      var path = '/?region='+region+'&id='+Math.floor(Date.now() / 1000);
       var title = 'Алкотаймер - ' + region;
       if (regions.has(region)) {
         title = 'Алкотаймер - ' + regions.get(region).name;
