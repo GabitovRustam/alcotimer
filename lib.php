@@ -65,10 +65,10 @@
     // Функция получения времени по региону в utc
     function get_deadline($region_code) {
         // Время по умолчанию
-        $timezone = 3;
+        $timezone = '3';
         $end_hour = 23;
         $start_hour = 8;
-        $timezoneName = timezone_name_from_abbr("", $timezone*3600, false);
+        $timezoneName = "+03:00";
         $date = new DateTime('now', new DateTimeZone($timezoneName));
         
         // Пытаемся найти время региона
@@ -76,7 +76,7 @@
         if ($region_data) {
             // Корректируем часовой пояс
             $timezone = $region_data["timezone"];
-            $timezoneName = timezone_name_from_abbr("", $timezone*3600, false);
+            $timezoneName = "+" . str_pad($timezone, 2, "0", STR_PAD_LEFT) . ":00";
             $date = new DateTime('now', new DateTimeZone($timezoneName));
             
             $end_hour = $region_data["end_workday"];

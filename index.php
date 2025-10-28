@@ -58,13 +58,13 @@
     </div>    
   </div>
   <div class="timer">
-	<div class="timer_title">Алкотаймер:</div>
+    <div class="timer_title">Алкотаймер:</div>
     <div class="timer_counter">
-	  <div class="timer__item timer__hours">00</div>
-	  <div class="separator">:</div>
-	  <div class="timer__item timer__minutes">00</div>
-	  <div class="separator">:</div>
-	  <div class="timer__item timer__seconds">00</div>
+      <div class="timer__item timer__hours">00</div>
+      <div class="separator">:</div>
+      <div class="timer__item timer__minutes">00</div>
+      <div class="separator">:</div>
+      <div class="timer__item timer__seconds">00</div>
     </div>
   </div>
   <div class="footer">

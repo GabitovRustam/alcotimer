@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Ищем элементы DOM
   const selectRegion = document.getElementById('region-select');
+  var newOption = new Option("Россия", "russia");
+  selectRegion.add(newOption);
+  const elTimer = document.querySelector('.timer_counter');
   const elTitle = document.querySelector('.timer_title');
   const elHours = document.querySelector('.timer__hours');
   const elMinutes = document.querySelector('.timer__minutes');
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Справочник по регионам
   var regions = new Map();
+  var allregions = new Map();
   fetch('get_regions.php') 
     .then(response => {
         if (!response.ok) {
@@ -156,6 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (regions.has(region)) {
         title = 'Алкотаймер - ' + regions.get(region).name;
       }
+
+      if (region == 'russia') {
+        title = 'Алкотаймер - Россия'
+      }
       document.title = title
       getDeadline(region)
       history.pushState({route: path}, title, path);
@@ -204,6 +212,26 @@ document.addEventListener('DOMContentLoaded', () => {
         svgElement.getElementById("Layer_1").setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
         svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");
       }
+    } else {
+      if (region == 'russia' && allregions) {
+        const svgElement = document.querySelector(".back object").getSVGDocument();
+        if (svgElement) {
+          const pathElements = svgElement.querySelectorAll('path');
+          pathElements.forEach(path => {
+            path.removeAttribute("style");
+          })
+          allregions.forEach((obj, svg) => {
+            if (obj.beforeDeadline) {
+              svgElement.getElementById(svg).setAttribute("style", "fill:#EEFFEE;stroke-width:0.5px;");
+            } else {
+              svgElement.getElementById(svg).setAttribute("style", "fill:#FFEEEE;stroke-width:0.5px;");
+            }
+          })
+          
+          svgElement.getElementById("Layer_1").setAttribute("viewBox", "0 0 680.489 386.6169");
+          svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");        
+        }
+      }
     }
   }
 
@@ -215,24 +243,53 @@ document.addEventListener('DOMContentLoaded', () => {
     nowTimezone = -now.getTimezoneOffset()
 
     // Получение дедлайна для региона
-    fetch('get_deadline.php?region=' + region) 
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Проблемы с сетью');
-          }
-          return response.json();
+    if (region != 'russia'){
+      fetch('get_deadline.php?region=' + region) 
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Проблемы с сетью');
+            }
+            return response.json();
+        })
+        .then(data => {
+            deadline = new Date(data.deadline.date);
+            beforeDeadline = data.beforeDeadline;
+            // Корректируем
+            deadline.setMinutes(deadline.getMinutes() + nowTimezone);
+
+            showBack();
       })
-      .then(data => {
-          deadline = new Date(data.deadline.date);
-          beforeDeadline = data.beforeDeadline;
+        .catch(error => {
+            console.error('Ошибка при получение таймера региона: ', error);
+        });
+    } else {
+      fetch('get_regions_deadline.php') 
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Проблемы с сетью');
+            }
+            return response.json();
+        })
+        .then(data => {
+          deadline = new Date();
+          deadline.setMinutes(deadline.getMinutes() + 48*60);
+
+          // Добавляем регионы в список для отображения карты
+          data.forEach((obj) => {
+            if (deadline > new Date(obj.deadline.date)) {
+              deadline = new Date(obj.deadline.date);
+              beforeDeadline = obj.beforeDeadline;
+            }
+            allregions.set(obj.svg, { beforeDeadline: obj.beforeDeadline });
+          });
           // Корректируем
           deadline.setMinutes(deadline.getMinutes() + nowTimezone);
-
           showBack();
-    })
-      .catch(error => {
-          console.error('Ошибка при получение таймера региона: ', error);
-      });
+      })
+        .catch(error => {
+            console.error('Ошибка при получение таймера региона: ', error);
+        });
+    }
   }
 
   // Функция обновления таймера
@@ -241,17 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const now = new Date();
     
     selectRegion.value = region
-    
-    if (beforeDeadline) {
-      elTitle.textContent = 'До окончания продажи алкоголя:';
-      timerColor = '#050'
-    } else {
-      timerColor = '#500'
-      elTitle.textContent = 'До начала продажи алкоголя:';
-    }
-    
-    elTitle.style.color = timerColor
-    
     // Получаем значение таймера (в милисекундах)
     const diff = Math.max(0, deadline - now);
 
@@ -259,26 +305,44 @@ document.addEventListener('DOMContentLoaded', () => {
       getDeadline(region)
     }
     
-    // Получаем компоненты таймера
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-  
-    // Выводим компоненты таймера
-    elHours.textContent = String(hours).padStart(2, '0');
-    elHours.style.color = timerColor
-    elMinutes.textContent = String(minutes).padStart(2, '0');
-    elMinutes.style.color = timerColor
-    elSeconds.textContent = String(seconds).padStart(2, '0');
-    elSeconds.style.color = timerColor
-  
-    // Выводим единицы измерения компонентов
-    elHours.dataset.title = declensionNum(hours, ['час', 'часа', 'часов']);
-    elHours.style.color = timerColor
-    elMinutes.dataset.title = declensionNum(minutes, ['минута', 'минуты', 'минут']);
-    elMinutes.style.color = timerColor
-    elSeconds.dataset.title = declensionNum(seconds, ['секунда', 'секунды', 'секунд']);
-    elSeconds.style.color = timerColor
+   if (region == 'russia') {
+      elTimer.style.visibility = 'hidden';
+      elTitle.style.visibility = 'hidden';
+    } else {
+      elTimer.style.visibility = 'visible';
+      elTitle.style.visibility = 'visible';
+
+      if (beforeDeadline) {
+        elTitle.textContent = 'До окончания продажи алкоголя:';
+        timerColor = '#050'
+      } else {
+        timerColor = '#500'
+        elTitle.textContent = 'До начала продажи алкоголя:';
+      }
+      
+      elTitle.style.color = timerColor
+      
+      // Получаем компоненты таймера
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+    
+      // Выводим компоненты таймера
+      elHours.textContent = String(hours).padStart(2, '0');
+      elHours.style.color = timerColor
+      elMinutes.textContent = String(minutes).padStart(2, '0');
+      elMinutes.style.color = timerColor
+      elSeconds.textContent = String(seconds).padStart(2, '0');
+      elSeconds.style.color = timerColor
+    
+      // Выводим единицы измерения компонентов
+      elHours.dataset.title = declensionNum(hours, ['час', 'часа', 'часов']);
+      elHours.style.color = timerColor
+      elMinutes.dataset.title = declensionNum(minutes, ['минута', 'минуты', 'минут']);
+      elMinutes.style.color = timerColor
+      elSeconds.dataset.title = declensionNum(seconds, ['секунда', 'секунды', 'секунд']);
+      elSeconds.style.color = timerColor
+     }
   };
 
   selectRegion.addEventListener('change', function() {
