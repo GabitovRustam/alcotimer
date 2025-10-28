@@ -33,7 +33,7 @@
   echo '<meta property="og:description" content="'.$description.'">';
 ?>
   <meta property="og:url" content="https://alcotimer.ru/">
-  <meta property="og:image" content="https://alcotimer.ru/svg/cocktail.svg">
+  <meta property="og:image" content="https://alcotimer.ru/png/cocktail.png">
   <meta property="og:site_name" content="Алкотаймер">
   <meta property="og:locale" content="ru_RU">
 
