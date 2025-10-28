@@ -210,6 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
           bbox.y =  bbox.y - (bbox.height  - old_height) / 2;
         }
         svgElement.getElementById("Layer_1").setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+        svgElement.getElementById("Layer_1").setAttribute("width", elbox.width);
+        svgElement.getElementById("Layer_1").setAttribute("height", elbox.height);
         svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");
       }
     } else {
@@ -229,6 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
           })
           
           svgElement.getElementById("Layer_1").setAttribute("viewBox", "0 0 680.489 386.6169");
+          svgElement.getElementById("Layer_1").setAttribute("width", elbox.width);
+          svgElement.getElementById("Layer_1").setAttribute("height", elbox.height);
           svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");        
         }
       }

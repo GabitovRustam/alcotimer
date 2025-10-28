@@ -43,7 +43,7 @@
 
 <body>
   <div class="back">
-    <object type="image/svg+xml" data="svg/russia.svg"></object>
+    <object class="back-obj" type="image/svg+xml" data="svg/russia.svg"></object>
   </div>
   <div class="header">
     <div class="title">
