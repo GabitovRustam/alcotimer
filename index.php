@@ -36,6 +36,7 @@
   <meta property="og:image" content="https://alcotimer.ru/png/cocktail.png">
   <meta property="og:site_name" content="Алкотаймер">
   <meta property="og:locale" content="ru_RU">
+  <meta name="description" content="Таймер оставшегося времени до окончания продажи алкоголя" />
 
   <link rel="icon" href="svg/cocktail.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style/style.css">
