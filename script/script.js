@@ -198,6 +198,20 @@ document.addEventListener('DOMContentLoaded', () => {
         bbox.width = bbox.width + 0.6*bbox.width;
         bbox.height = bbox.height + 0.6*bbox.height;
 
+        min_scale = 80;
+
+        if (bbox.width < min_scale) {
+          diff_x = min_scale - bbox.width;
+          bbox.x = bbox.x - diff_x / 2.0;
+          bbox.width = min_scale;
+        }
+
+        if (bbox.height < min_scale) {
+          diff_y = min_scale - bbox.height;
+          bbox.y = bbox.y - diff_y / 2.0;
+          bbox.height = min_scale;
+        }
+
         ratio_width = bbox.width/elbox.width;
         ratio_height = bbox.height/elbox.height;
         if (ratio_width < ratio_height) {
@@ -209,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
           bbox.height = bbox.width * elbox.height / elbox.width;
           bbox.y =  bbox.y - (bbox.height  - old_height) / 2;
         }
+
         svgElement.getElementById("Layer_1").setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
         svgElement.getElementById("Layer_1").setAttribute("width", elbox.width);
         svgElement.getElementById("Layer_1").setAttribute("height", elbox.height);
