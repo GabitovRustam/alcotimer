@@ -72,6 +72,22 @@
     <div class="footer-item">
       2025 <a href="mailto:gabitov_rustam@mail.ru">Рустам Габитов</a>
     </div>
+    <div class="footer-item">
+<?php
+  list($all_hosts, $all_views, $today_hosts, $today_views) = get_counters($region_code);
+  echo '<img src="png/day.png" type="image/png" alt="За сегодня" width="12" height="12">';
+  echo $today_hosts;
+  echo '<img src="png/man.png" type="image/png" alt="посетителей" width="12" height="12">';
+  echo $today_views;
+  echo '<img src="png/eye.png" type="image/png" alt="просмотров" width="12" height="12">';
+  echo '<br />';
+  echo '<img src="png/all.png" type="image/png" alt="Всего" width="12" height="12">';
+  echo $all_hosts;
+  echo '<img src="png/man.png" type="image/png" alt="посетителей" width="12" height="12">';
+  echo $all_views ;
+  echo '<img src="png/eye.png" type="image/png" alt="просмотров" width="12" height="12">';
+?>
+    </div>
   </div>
   <script src="script/script.js"></script>
 </body>
