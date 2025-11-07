@@ -1,4 +1,6 @@
 <?php
+    require('RussianCalendar.php');
+
     // Получение региона по кладр
     function get_region_code_by_kladr($kladr)
     {
@@ -82,8 +84,7 @@
             $end_hour = $region_data["end_workday"];
             $start_hour = $region_data["start_workday"];
             
-            $dayOfWeek = $date->format('w'); 
-            if ($dayOfWeek === 0 || $dayOfWeek === 6) {
+            if (!checkWorkingDay($date)) {
                 $end_hour = $region_data["end_holiday"];
                 $start_hour = $region_data["start_holiday"];
             } 
@@ -121,6 +122,7 @@
         return [$timer, $beforeDeadline];
     }
 
+    // Получение счетчиков посещения
     function get_counters() {
         require('dbconn.php');
 
@@ -245,5 +247,13 @@
         $conn->close();   
 
         return [$all_hosts, $all_views, $today_hosts, $today_views];
+    }
+
+    function checkWorkingDay($date) {
+        $cache_folder = './xmlcalendar';
+        $cache_duration = 60*60*24; // кэш файла на сутки
+        $calendar = new \gozoro\russian_calendar\RussianCalendar('ru', $cache_folder, $cache_duration);
+        
+        return $calendar->checkWorkingDay($date);
     }
 ?>
