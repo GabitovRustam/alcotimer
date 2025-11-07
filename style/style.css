@@ -85,6 +85,23 @@ body {
 	justify-items: center;
 }
 
+.footer-counter {
+	font-size: 1rem;
+  border: 1px solid;
+  padding: 0.2em;
+}
+
+img.counterIcon {
+	width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
+}
+
+img.lastCounterIcon {
+	width: 1em;
+  height: 1em;
+}
+
 .region {
   display: flex;
   justify-content: flex-end;
