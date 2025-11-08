@@ -7,13 +7,15 @@
     
     $allregions = [];
     foreach ($regions as $region) {
-        list($deadline, $beforeDeadline) = get_deadline($region['code']);
+        list($deadline, $beforeDeadline, $actualBanDates, $banDates) = get_deadline($region['code']);
         $newregion = [];
         $newregion['code'] = $region['code'];
         $newregion['name'] = $region['name'];
         $newregion['svg'] = $region['svg'];
         $newregion['deadline'] = $deadline;
         $newregion['beforeDeadline'] = $beforeDeadline;
+        $newregion['actualBanDates'] = $actualBanDates;
+        $newregion['banDates'] = $banDates;
         array_push($allregions, $newregion);
     }
 

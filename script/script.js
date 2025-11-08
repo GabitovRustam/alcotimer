@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   var deadline = new Date();
   var beforeDeadline = true;
-  
+  var showAllBanDays = false;
+  var actualBanDates = [];
+  var allBanDates = [];
+
   // Ищем элементы DOM
   const selectRegion = document.getElementById('region-select');
   var newOption = new Option("Россия", "russia");
@@ -12,9 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const elMinutes = document.querySelector('.timer__minutes');
   const elSeconds = document.querySelector('.timer__seconds');
   const location = document.getElementById('location');
+  const elBanDays = document.querySelector('.ban_days');
+  const elBanDaysShowAll = document.getElementById('ban_days_show_all');
+  const elSBanDaysTitle = document.querySelector('.ban_days_title');
+  const elSBanDaysList = document.querySelector('.ban_days_list');
   
   location.addEventListener('click', function() {
       getCurrentGeolocation();
+    });
+
+  elBanDaysShowAll.addEventListener('click', function() {
+      banDaysShowAllChange();
     });
 
   window.addEventListener('resize', (e) => {
@@ -91,6 +102,84 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }  
 
+  // Переключение режима показа особых дней запрета
+  const banDaysShowAllChange = () =>
+  {
+    showAllBanDays = !showAllBanDays;
+    showBanDays();
+  }
+  
+  // Показ особых дней запрета
+  const showBanDays = () => 
+  {
+    var result = "";
+  
+    if (showAllBanDays)
+    {
+      exactlyResult = "";
+      notExactlyResult = "";
+      allBanDates.forEach(function (banDate) {
+        if (banDate.exactly === "1") {
+          exactlyResult += "<li>" + banDate.name + "</li>";
+        } else {
+          if (notExactlyResult == "") {
+            notExactlyResult += banDate.name;
+          } else {
+            notExactlyResult += ", " + banDate.name;
+          }
+          
+        }
+      });
+
+      if (exactlyResult != "") 
+      {
+        result += "Учтены:<ul>" + exactlyResult + "</ul>"
+      }
+
+      if (notExactlyResult != "") 
+      {
+        result += "Не учтены: " + notExactlyResult
+      }
+      
+      elBanDaysShowAll.textContent = '[актуальные]';
+      elSBanDaysTitle.textContent = 'Все особые дни запрета';
+    } else
+    {
+      exactlyResult = "";
+      notExactlyResult = "";
+      actualBanDates.forEach(function (banDate) {
+        if (banDate.exactly === "1") {
+          exactlyResult += "<li>" + banDate.name + "</li>";
+        } else {
+          if (notExactlyResult == "") {
+            notExactlyResult += banDate.name;
+          } else {
+            notExactlyResult += ", " + banDate.name;
+          }
+          
+        }
+      });
+
+      if (exactlyResult != "") 
+      {
+        result += "Учтены:<ul>" + exactlyResult + "</ul>"
+      }
+
+      if (notExactlyResult != "") 
+      {
+        result += "Не учтены: " + notExactlyResult
+      }
+
+      elBanDaysShowAll.textContent = '[все]';
+      elSBanDaysTitle.textContent = 'Актуальные особые дни запрета';
+    };
+
+    if (result == "") {
+      result = "нет";
+    }
+    elSBanDaysList.innerHTML = result;
+  }
+
   // Поулчение региона по геолокации
   const getRedionByLatAndLon = (lat, lon) =>
   {
@@ -162,9 +251,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (region == 'russia') {
-        title = 'Алкотаймер - Россия'
+        title = 'Алкотаймер - Россия';
       }
-      document.title = title
+      document.title = title;
+
+      // Сбрасываем показ особых дней
+      showAllBanDays = false;
+
       getDeadline(region)
       history.pushState({route: path}, title, path);
   }; 
@@ -273,8 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             deadline = new Date(data.deadline.date);
             beforeDeadline = data.beforeDeadline;
+            actualBanDates = data.actualBanDates;
+            allBanDates = data.banDates;
             // Корректируем
             deadline.setMinutes(deadline.getMinutes() + nowTimezone);
+
+            showBanDays();
 
             showBack();
       })
@@ -327,9 +424,11 @@ document.addEventListener('DOMContentLoaded', () => {
    if (region == 'russia') {
       elTimer.style.visibility = 'hidden';
       elTitle.style.visibility = 'hidden';
+      elBanDays.style.visibility = 'hidden';
     } else {
       elTimer.style.visibility = 'visible';
       elTitle.style.visibility = 'visible';
+      elBanDays.style.visibility = 'visible';
 
       if (beforeDeadline) {
         elTitle.textContent = 'До окончания продажи алкоголя:';
@@ -339,7 +438,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elTitle.textContent = 'До начала продажи алкоголя:';
       }
       
-      elTitle.style.color = timerColor
+      elTitle.style.color = timerColor;
+      elBanDays.style.color = timerColor;
       
       // Получаем компоненты таймера
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -348,19 +448,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
       // Выводим компоненты таймера
       elHours.textContent = String(hours).padStart(2, '0');
-      elHours.style.color = timerColor
+      elHours.style.color = timerColor;
       elMinutes.textContent = String(minutes).padStart(2, '0');
-      elMinutes.style.color = timerColor
+      elMinutes.style.color = timerColor;
       elSeconds.textContent = String(seconds).padStart(2, '0');
-      elSeconds.style.color = timerColor
+      elSeconds.style.color = timerColor;
     
       // Выводим единицы измерения компонентов
       elHours.dataset.title = declensionNum(hours, ['час', 'часа', 'часов']);
-      elHours.style.color = timerColor
+      elHours.style.color = timerColor;
       elMinutes.dataset.title = declensionNum(minutes, ['минута', 'минуты', 'минут']);
-      elMinutes.style.color = timerColor
+      elMinutes.style.color = timerColor;
       elSeconds.dataset.title = declensionNum(seconds, ['секунда', 'секунды', 'секунд']);
-      elSeconds.style.color = timerColor
+      elSeconds.style.color = timerColor;
      }
   };
 

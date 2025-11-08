@@ -72,6 +72,8 @@
         $start_hour = 8;
         $timezoneName = "+03:00";
         $date = new DateTime('now', new DateTimeZone($timezoneName));
+        $actualBanDates = [];
+        $banDates = [];
         
         // Пытаемся найти время региона
         $region_data = get_region_data($region_code);
@@ -80,6 +82,27 @@
             $timezone = $region_data["timezone"];
             $timezoneName = "+" . str_pad($timezone, 2, "0", STR_PAD_LEFT) . ":00";
             $date = new DateTime('now', new DateTimeZone($timezoneName));
+
+            // Учитываем особые дни запрета
+            $banDates = get_ban_dates($region_code);
+            $i = 1;
+            do {
+                $date_changed = false;
+                $i++;
+                foreach ($banDates as $ban_date) {
+                    $start_date = new DateTime($ban_date['start_date'].' 00:00:00', new DateTimeZone($timezoneName));
+                    $end_date = new DateTime($ban_date['end_date'].' 23:59:59', new DateTimeZone($timezoneName));
+
+                    if ($start_date <= $date and $end_date >= $date ) {
+                        array_push($actualBanDates, $ban_date);
+                        if ($ban_date['exactly'] == '1') {
+                            $date = clone $end_date;
+                            $date->modify('+1 minute');
+                            $date_changed = true;
+                        }
+                    }
+                }
+            } while ($date_changed and $i <= 50);
             
             $end_hour = $region_data["end_workday"];
             $start_hour = $region_data["start_workday"];
@@ -111,15 +134,35 @@
         // Корректируем к utc
         $deadline->setTimezone(new DateTimeZone('UTC'));
     
-        return [$deadline, $beforeDeadline];
+        return [$deadline, $beforeDeadline, $actualBanDates, $banDates];
     }
 
     // Функция получения таймера по региону
     function get_timer($region_code) {
-        list($deadline, $beforeDeadline) = get_deadline($region_code);
+        list($deadline, $beforeDeadline, $actualBanDates, $banDates) = get_deadline($region_code);
         $now = new DateTime('now', new DateTimeZone('UTC'));
         $timer = date_diff($now, $deadline);
-        return [$timer, $beforeDeadline];
+        return [$timer, $beforeDeadline, $actualBanDates, $banDates];
+    }
+
+    // Функция получения дней запрета по региону
+    function get_ban_dates($region_code) {
+       require('dbconn.php');
+
+        $conn = new mysqli($DBHost, $DBLogin, $DBPassword, $DBName);
+        if($conn->connect_error){
+            echo "Ошибка: " . $conn->connect_error;
+        }
+
+        $sql = "SELECT `ban_dates`.`start_date`, `ban_dates`.`end_date`, `ban_dates`.`name`, `ban_dates`.`exactly` FROM `ban_dates` JOIN `region_ban_dates` ON `region_ban_dates`.`ban_date_id` = `ban_dates`.`id` JOIN `regions` ON `region_ban_dates`.`region_id` = `regions`.`id` where `regions`.`code` = '" . $region_code . "'";
+        if($result = $conn->query($sql)){
+            $retval = $result->fetch_all(MYSQLI_ASSOC);
+            $result->free();
+        } else{
+            echo "Ошибка: " . $conn->error;
+        }
+        $conn->close();   
+        return $retval;
     }
 
     // Получение счетчиков посещения

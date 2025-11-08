@@ -46,6 +46,7 @@ body {
 .timer_title {
   font-size: 1rem;
   justify-items: center;
+  text-align: center;
 }
 
 .timer_counter {
@@ -105,6 +106,26 @@ img.lastCounterIcon {
 .region {
   display: flex;
   justify-content: flex-end;
+}
+
+.ban_days {
+  margin-top: 3em;
+}
+
+ul {
+  margin: 0em;
+}
+
+.ban_days_all_title {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1rem;
+  margin-top: 0em;
+}
+
+.ban_days_list {
+  font-size: 0.875rem;
+  margin-top: 0em;
 }
 
 #location {

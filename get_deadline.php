@@ -8,11 +8,13 @@
         $region_code = 'Moscow';
     }
 
-    list($deadline, $beforeDeadline) = get_deadline($region_code);
+    list($deadline, $beforeDeadline, $actualBanDates, $banDates) = get_deadline($region_code);
 
     $data = [
         'deadline' => $deadline,
-        'beforeDeadline' => $beforeDeadline
+        'beforeDeadline' => $beforeDeadline,
+        'actualBanDates' => $actualBanDates,
+        'banDates' => $banDates
     ];
 
     echo json_encode($data);

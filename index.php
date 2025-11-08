@@ -21,7 +21,7 @@
   $description = 'Таймер оставшегося времени до окончания продажи алкоголя';
   if (!empty($region_name)) {
     $title = 'Алкотаймер - '.$region_name;
-    list($timer, $beforeDeadline) = get_timer($region_code);
+    list($timer, $beforeDeadline, $actualBanDates, $banDates) = get_timer($region_code);
     $timerString = $timer->format('%H').':'.$timer->format('%I').':'.$timer->format('%S');
     $description = 'До начала продажи алкоголя: '.$timerString;
     if ($beforeDeadline) {
@@ -66,6 +66,19 @@
       <div class="timer__item timer__minutes">00</div>
       <div class="separator">:</div>
       <div class="timer__item timer__seconds">00</div>
+    </div>
+    <div class="ban_days">
+      <div class="ban_days_all_title">
+        <div class="ban_days_title">
+          Актуальные особые дни запрета
+        </div>
+        <a id="ban_days_show_all" href="javascript:void(0);">
+          [все]
+        </a>
+      </div>
+      <div class="ban_days_list">
+        нет
+      </div>
     </div>
   </div>
   <div class="footer">
