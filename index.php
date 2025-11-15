@@ -39,7 +39,7 @@
   <meta name="description" content="Таймер оставшегося времени до окончания продажи алкоголя" />
 
   <link rel="icon" href="svg/cocktail.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/style2.css">
 </head>
 
 <body>
@@ -102,7 +102,7 @@
       2025 <a href="mailto:gabitov_rustam@mail.ru">Рустам Габитов</a>
     </div>
   </div>
-  <script src="script/script.js"></script>
+  <script src="script/script2.js"></script>
 </body>
 
 </html>
