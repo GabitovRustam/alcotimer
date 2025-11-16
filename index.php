@@ -39,7 +39,7 @@
   <meta name="description" content="Таймер оставшегося времени до окончания продажи алкоголя" />
 
   <link rel="icon" href="svg/cocktail.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style/style2.css">
+  <link rel="stylesheet" href="style/style3.css">
 </head>
 
 <body>
@@ -82,6 +82,11 @@
     </div>
   </div>
   <div class="footer">
+    <div class="footer-item">
+      <a href="https://max.ru/join/f97VDsjbaPXe-lms0XyJn8pu-9_28gTGRyEE4UHEYAI" target="_blank">  
+        <img src="svg/max.svg" type="image/svg+xml" alt="MAX мессенджер" width="24" height="24">  
+      </a>  
+    </div>
     <div class="footer-counter">
 <?php
   list($all_hosts, $all_views, $today_hosts, $today_views) = get_counters($region_code);
@@ -90,18 +95,12 @@
   echo '<img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">';
   echo $today_views;
   echo '<img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">';
-  echo '<br />';
   echo '<img class="counterIcon" src="png/all.png" type="image/png" alt="Всего" title="Всего" width="12" height="12">';
   echo $all_hosts;
   echo '<img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">';
   echo $all_views ;
   echo '<img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">';
 ?>
-    </div>
-    <div class="footer-item">
-      <a href="https://max.ru/join/f97VDsjbaPXe-lms0XyJn8pu-9_28gTGRyEE4UHEYAI" target="_blank">  
-        <img src="svg/max.svg" type="image/svg+xml" alt="MAX мессенджер" width="24" height="24">  
-      </a>  
     </div>
   </div>
   <script src="script/script2.js"></script>

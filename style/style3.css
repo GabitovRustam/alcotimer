@@ -87,8 +87,7 @@ body {
 }
 
 .footer-counter {
-	font-size: 1rem;
-  border: 1px solid;
+	font-size: 0.75rem;
   padding: 0.2em;
 }
 
@@ -101,6 +100,7 @@ img.counterIcon {
 img.lastCounterIcon {
 	width: 1em;
   height: 1em;
+  margin-right: 1em;
 }
 
 .region {
