@@ -99,7 +99,9 @@
 ?>
     </div>
     <div class="footer-item">
-      2025 <a href="mailto:gabitov_rustam@mail.ru">Рустам Габитов</a>
+      <a href="https://max.ru/join/f97VDsjbaPXe-lms0XyJn8pu-9_28gTGRyEE4UHEYAI" target="_blank">  
+        <img src="svg/max.svg" type="image/svg+xml" alt="MAX мессенджер" width="24" height="24">  
+      </a>  
     </div>
   </div>
   <script src="script/script2.js"></script>
