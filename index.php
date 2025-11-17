@@ -22,7 +22,9 @@
   if (!empty($region_name)) {
     $title = 'Алкотаймер - '.$region_name;
     list($timer, $beforeDeadline, $actualBanDates, $banDates) = get_timer($region_code);
-    $timerString = $timer->format('%H').':'.$timer->format('%I').':'.$timer->format('%S');
+    $hours = $timer->h;
+    $hours = $hours + ($timer->days*24);
+    $timerString = sprintf("%02d", $hours).':'.$timer->format('%I').':'.$timer->format('%S');
     $description = 'До начала продажи алкоголя: '.$timerString;
     if ($beforeDeadline) {
       $description = 'До окончания продажи алкоголя: '.$timerString;
@@ -103,7 +105,7 @@
 ?>
     </div>
   </div>
-  <script src="script/script2.js"></script>
+  <script src="script/script3.js"></script>
 </body>
 
 </html>
