@@ -88,6 +88,9 @@
       <a href="https://max.ru/join/f97VDsjbaPXe-lms0XyJn8pu-9_28gTGRyEE4UHEYAI" target="_blank">  
         <img src="svg/max.svg" type="image/svg+xml" alt="MAX мессенджер" width="24" height="24">  
       </a>  
+      <a href="https://pay.cloudtips.ru/p/8ab40392" target="_blank">  
+        <img src="svg/cloudtips.svg" type="image/svg+xml" alt="CloudTips" width="108" height="24">  
+      </a>  
     </div>
     <div class="footer-counter">
 <?php
