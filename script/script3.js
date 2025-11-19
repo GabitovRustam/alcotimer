@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const elBanDaysShowAll = document.getElementById('ban_days_show_all');
   const elSBanDaysTitle = document.querySelector('.ban_days_title');
   const elSBanDaysList = document.querySelector('.ban_days_list');
-  
+
   location.addEventListener('click', function() {
       getCurrentGeolocation();
     });
@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', (e) => {
     showBack();
-  });    
+  });
   // Получаем сохранненый регион
   var region = localStorage.getItem('region');
-  
+
   // Справочник по регионам
   var regions = new Map();
   var allregions = new Map();
-  fetch('get_regions.php') 
+  fetch('get_regions')
     .then(response => {
         if (!response.ok) {
             throw new Error('Проблемы с сетью');
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function geo_error(err) {
     getRegionByIP();
   }
-  
+
   // Получение геолокации
   const getCurrentGeolocation = () =>
   {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       getRegionByIP();
     };
-  }  
+  }
 
   // Переключение режима показа особых дней запрета
   const banDaysShowAllChange = () =>
@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
     showAllBanDays = !showAllBanDays;
     showBanDays();
   }
-  
+
   // Показ особых дней запрета
-  const showBanDays = () => 
+  const showBanDays = () =>
   {
     var result = "";
-  
+
     if (showAllBanDays)
     {
       exactlyResult = "";
@@ -127,20 +127,20 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             notExactlyResult += ", " + banDate.name;
           }
-          
+
         }
       });
 
-      if (exactlyResult != "") 
+      if (exactlyResult != "")
       {
         result += "Учтены:<ul>" + exactlyResult + "</ul>"
       }
 
-      if (notExactlyResult != "") 
+      if (notExactlyResult != "")
       {
         result += "Не учтены: " + notExactlyResult
       }
-      
+
       elBanDaysShowAll.textContent = '[актуальные]';
       elSBanDaysTitle.textContent = 'Все особые дни запрета';
     } else
@@ -156,16 +156,16 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             notExactlyResult += ", " + banDate.name;
           }
-          
+
         }
       });
 
-      if (exactlyResult != "") 
+      if (exactlyResult != "")
       {
         result += "Учтены:<ul>" + exactlyResult + "</ul>"
       }
 
-      if (notExactlyResult != "") 
+      if (notExactlyResult != "")
       {
         result += "Не учтены: " + notExactlyResult
       }
@@ -187,9 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
       error_geolocated();
       return '';
     }
-    
+
     // Получение региона
-    fetch('get_region_by_lat_lon.php?lat='+lat+'&lon='+lon) 
+    fetch('get_region_by_lat_lon?lat='+lat+'&lon='+lon)
       .then(response => {
           if (!response.ok) {
               throw new Error('Проблемы с сетью');
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Получение региона по ip
   function getRegionByIP () {
     // Получение региона
-    fetch('get_region_by_ip.php') 
+    fetch('get_region_by_ip')
       .then(response => {
           if (!response.ok) {
               throw new Error('Проблемы с сетью');
@@ -226,14 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!data.region_code) {
             data.region_code = 'Moscow'
           }
-          
+
           changeRegion(data.region_code);
           geolocated();
       })
       .catch(error => {
           error_geolocated();
           console.error('Ошибка при получение региона по IP: ', error);
-      });    
+      });
   }
 
 
@@ -260,13 +260,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       getDeadline(region)
       history.pushState({route: path}, title, path);
-  }; 
-  
+  };
+
   // Функция склонения числительных
   const declensionNum = (num, words) => {
     return words[(num % 100 > 4 && num % 100 < 20) ? 2 : [2, 0, 1, 1, 1, 2][num % 10 < 5 ? num % 10 : 5]];
   };
-  
+
   //Функция прорисовки фона
   const showBack = () => {
     if (regions.has(region)) {
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           svgElement.getElementById(regions.get(region).svg).setAttribute("style", "fill:#FFEEEE;stroke-width:0.5px;");
         }
-        
+
         const elbox = document.querySelector(".back").getBoundingClientRect()
         const bbox = svgElement.getElementById(regions.get(region).svg).getBBox();
 
@@ -337,11 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
               svgElement.getElementById(svg).setAttribute("style", "fill:#FFEEEE;stroke-width:0.5px;");
             }
           })
-          
+
           svgElement.getElementById("Layer_1").setAttribute("viewBox", "0 0 680.489 386.6169");
           svgElement.getElementById("Layer_1").setAttribute("width", elbox.width);
           svgElement.getElementById("Layer_1").setAttribute("height", elbox.height);
-          svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");        
+          svgElement.getElementById("Layer_1").setAttribute("reserveAspectRatio", "xMidYMid meet");
         }
       }
     }
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Получение дедлайна для региона
     if (region != 'russia'){
-      fetch('get_deadline.php?region=' + region) 
+      fetch('get_deadline?region=' + region)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Проблемы с сетью');
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Ошибка при получение таймера региона: ', error);
         });
     } else {
-      fetch('get_regions_deadline.php') 
+      fetch('get_regions_deadline')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Проблемы с сетью');
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateTimer = () => {
     // Текущее время
     const now = new Date();
-    
+
     selectRegion.value = region
     // Получаем значение таймера (в милисекундах)
     const diff = Math.max(0, deadline - now);
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (diff == 0) {
       getDeadline(region)
     }
-    
+
    if (region == 'russia') {
       elTimer.style.visibility = 'hidden';
       elTitle.style.visibility = 'hidden';
@@ -437,15 +437,15 @@ document.addEventListener('DOMContentLoaded', () => {
         timerColor = '#500'
         elTitle.textContent = 'До начала продажи алкоголя:';
       }
-      
+
       elTitle.style.color = timerColor;
       elBanDays.style.color = timerColor;
-      
+
       // Получаем компоненты таймера
       const hours = Math.floor((diff / (1000 * 60 * 60)));
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
-    
+
       // Выводим компоненты таймера
       elHours.textContent = String(hours).padStart(2, '0');
       elHours.style.color = timerColor;
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elMinutes.style.color = timerColor;
       elSeconds.textContent = String(seconds).padStart(2, '0');
       elSeconds.style.color = timerColor;
-    
+
       // Выводим единицы измерения компонентов
       elHours.dataset.title = declensionNum(hours, ['час', 'часа', 'часов']);
       elHours.style.color = timerColor;
@@ -468,17 +468,17 @@ document.addEventListener('DOMContentLoaded', () => {
       changeRegion(this.value);
       not_geolocated();
     });
-    
+
   // Получаем регион из параметров
   let params = new URLSearchParams(window.location.search);
   if (params.has('region')) {
-    let regionParam = decodeURIComponent(params.get('region')); 
-  
+    let regionParam = decodeURIComponent(params.get('region'));
+
     if (regionParam) {
       changeRegion(regionParam);
     }
   }
-  
+
   // Если региона нет, то пробуем его определить
   if (!region) {
 
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Прорисовываем текущее значение таймера
   updateTimer();
-  
+
   // Запускаем таймер с интервалом в секунду
   const timerId = setInterval(updateTimer, 1000);
 });

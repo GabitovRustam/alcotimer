@@ -1,1 +1,7 @@
-Redirect 301 /index.html https://alcotimer.ru/index.php
+Redirect 301 /index.html https://alcotimer.ru/
+
+Options +ExecCGI
+AddHandler wsgi-script .py
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.py/$1 [QSA,PT]

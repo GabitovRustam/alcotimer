@@ -6,34 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Алкотаймер</title>
   <!-- Open Graph Generated: a.pr-cy.ru -->
-   <meta property="og:type" content="website">
-<?php
-  require('lib.php');
-
-  $region_code =  $_GET['region'];
-  $region_name = '';
-  if (!empty($region_code)){
-    $region_data = get_region_data($region_code);
-    $region_name = $region_data['name'];
-  }
-
-  $title = 'Алкотаймер';
-  $description = 'Таймер оставшегося времени до окончания продажи алкоголя';
-  if (!empty($region_name)) {
-    $title = 'Алкотаймер - '.$region_name;
-    list($timer, $beforeDeadline, $actualBanDates, $banDates) = get_timer($region_code);
-    $hours = $timer->h;
-    $hours = $hours + ($timer->days*24);
-    $timerString = sprintf("%02d", $hours).':'.$timer->format('%I').':'.$timer->format('%S');
-    $description = 'До начала продажи алкоголя: '.$timerString;
-    if ($beforeDeadline) {
-      $description = 'До окончания продажи алкоголя: '.$timerString;
-    }
-  } 
-
-  echo '<meta property="og:title" content="'.$title.'">';
-  echo '<meta property="og:description" content="'.$description.'">';
-?>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
   <meta property="og:url" content="https://alcotimer.ru/">
   <meta property="og:image" content="https://alcotimer.ru/png/cocktail.png">
   <meta property="og:site_name" content="Алкотаймер">
@@ -51,7 +26,7 @@
   <div class="header">
     <div class="title">
       <img src="svg/cocktail.svg" type="image/svg+xml" alt="Алкотаймер" width="64" height="64">
-      Алкотаймер
+      {{ title }}
     </div>
     <div class="region">
       <a id="location" href="javascript:void(0);">
@@ -87,25 +62,23 @@
     <div class="footer-item">
       <a href="https://max.ru/join/f97VDsjbaPXe-lms0XyJn8pu-9_28gTGRyEE4UHEYAI" target="_blank">  
         <img src="svg/max.svg" type="image/svg+xml" alt="MAX мессенджер" width="24" height="24">  
-      </a>  
+      </a>
       <a href="https://pay.cloudtips.ru/p/8ab40392" target="_blank">  
         <img src="svg/cloudtips.svg" type="image/svg+xml" alt="CloudTips" width="108" height="24">  
       </a>  
     </div>
     <div class="footer-counter">
-<?php
-  list($all_hosts, $all_views, $today_hosts, $today_views) = get_counters($region_code);
-  echo '<img class="counterIcon" src="png/day.png" type="image/png" alt="За сегодня" title="За сегодня" width="12" height="12">';
-  echo $today_hosts;
-  echo '<img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">';
-  echo $today_views;
-  echo '<img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">';
-  echo '<img class="counterIcon" src="png/all.png" type="image/png" alt="Всего" title="Всего" width="12" height="12">';
-  echo $all_hosts;
-  echo '<img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">';
-  echo $all_views ;
-  echo '<img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">';
-?>
+
+  <img class="counterIcon" src="png/day.png" type="image/png" alt="За сегодня" title="За сегодня" width="12" height="12">
+  {{ today_hosts }}
+  <img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">
+  {{ today_views }}
+  <img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">
+  <img class="counterIcon" src="png/all.png" type="image/png" alt="Всего" title="Всего" width="12" height="12">
+  {{ all_hosts }}
+  <img class="counterIcon" src="png/man.png" type="image/png" alt="посетителей" title="посетителей" width="12" height="12">
+  {{ all_views }}
+  <img class="lastCounterIcon" src="png/eye.png" type="image/png" alt="просмотров" title="просмотров" width="12" height="12">
     </div>
   </div>
   <script src="script/script3.js"></script>
