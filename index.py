@@ -6,13 +6,13 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 logging.basicConfig(
-    filename=os.path.expanduser('~/test/app.log'),
+    filename=os.path.expanduser('~/app.log'),
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     filemode="a"
 )
-sys.path.append(os.path.expanduser('~/test/'))
-sys.path.append(os.path.expanduser('~/test/venv/lib/python3.10/site-packages/'))
+sys.path.append(os.path.expanduser('~/'))
+sys.path.append(os.path.expanduser('~/venv/lib/python3.10/site-packages/'))
 
 from flask import Flask
 from flask import render_template
@@ -157,7 +157,7 @@ def get_counters(visitor_ip):
 def checkWorkingDay(date):
     is_workday = date.weekday() <= 4
 
-    cache_file = os.path.expanduser(f'~/test/public_html/xmlcalendar/calendar-{date.year}-ru')
+    cache_file = os.path.expanduser(f'~/public_html/xmlcalendar/calendar-{date.year}-ru')
     need_load_calendar = True
     if os.path.exists(cache_file):
         modified = datetime.fromtimestamp(os.path.getmtime(cache_file))
