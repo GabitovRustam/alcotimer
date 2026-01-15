@@ -424,7 +424,7 @@ def get_taptheslime_leadership(user_id, user_name, gems, coins):
     cur.execute(sql)
     all_players_count = cur.fetchone()[0]
 
-    sql = "SELECT `userid`, `username`, `gems`, `coins` FROM `players` ORDER BY `gems` DESC, `coins` DESC, `userid` DESC LIMIT 5"
+    sql = "SELECT `userid`, `username`, `gems`, `coins` FROM `players` ORDER BY `gems` DESC, `coins` DESC, `userid` DESC LIMIT 10"
     cur.execute(sql)
     leadership_info = cur.fetchall()
 
