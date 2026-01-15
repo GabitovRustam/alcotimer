@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           var newOption = new Option(obj.name, obj.code);
           selectRegion.add(newOption);
           regions.set(obj.code, { name: obj.name, svg: obj.svg });
+          changeRegion(region);
         });
 
     })

@@ -90,8 +90,9 @@ def get_counters(visitor_ip):
     visits = cur.fetchone()
 
     # Если еще не было посещений вообще
-    if not visits:
+    if visits is None:
         cur.execute("INSERT INTO `visits` SET `hosts`= 0, `views`= 0")
+        cnx.commit()
 
         sql = "SELECT `id`, `hosts`, `views` FROM `visits`"
         cur.execute(sql)
@@ -107,9 +108,11 @@ def get_counters(visitor_ip):
     visit_ips = cur.fetchone()
 
     # Если такого посетителя еще не было
-    if not visit_ips:
+    if visit_ips is None:
         all_hosts = all_hosts + 1
         cur.execute(f"INSERT INTO `visit_ips` SET `ip`= '{visitor_ip}'")
+        cnx.commit()
+
         sql = f"SELECT `id` FROM `visit_ips` WHERE `ip`='{visitor_ip}'"
         cur.execute(sql)
         visit_ips = cur.fetchone()
@@ -117,17 +120,20 @@ def get_counters(visitor_ip):
     visit_ips_id = visit_ips[0]
 
     cur.execute(f"UPDATE `visits` SET `hosts`= {all_hosts}, `views`= {all_views} WHERE `id`= {visits_id}")
+    cnx.commit()
 
     sql = f"SELECT `id`, `hosts`, `views` FROM `visit_dates` WHERE `date`='{today}'"
     cur.execute(sql)
     visit_dates = cur.fetchone()
 
     # Если сегодня еще не было посещений
-    if not visit_dates:
+    if visit_dates is None:
         # Очищаем таблицу ips
         cur.execute("DELETE FROM `visit_today_ip`")
+        cnx.commit()
 
         cur.execute(f"INSERT INTO `visit_dates` SET `date`='{today}', `hosts`=0,`views`=0")
+        cnx.commit()
 
         sql = f"SELECT `id`, `hosts`, `views` FROM `visit_dates` WHERE `date`='{today}'"
         cur.execute(sql)
@@ -143,13 +149,15 @@ def get_counters(visitor_ip):
     visit_today_ip = cur.fetchone()
 
     # Если такой IP-адрес новый
-    if not visit_today_ip:
+    if visit_today_ip is None:
         today_hosts += 1
         # Заносим в базу IP-адрес этого посетителя
         cur.execute(f"INSERT INTO `visit_today_ip` SET `ip_id`='{visit_ips_id}'")
+        cnx.commit()
 
     # Добавляем в базу +1 уникального посетителя (хост) и +1 просмотр (хит)
     cur.execute(f"UPDATE `visit_dates` SET `hosts`={today_hosts}, `views`={today_views} WHERE `id`={visit_dates_id}")
+    cnx.commit()
 
     return all_hosts, all_views, today_hosts, today_views
 
@@ -339,11 +347,25 @@ def get_deadline_end():
 
     deadline, beforeDeadline, actualBanDates, banDates = get_deadline(region_code)
 
+    banDatesNames = []
+    for banDate in banDates:
+        newbanDate = {}
+        newbanDate['name'] = banDate[2]
+        newbanDate['exactly'] = str(banDate[3])
+        banDatesNames.append(newbanDate)
+
+    actualBanDatesNames = []
+    for actualBanDate in actualBanDates:
+        newActualBanDate = {}
+        newActualBanDate['name'] = actualBanDate[2]
+        newActualBanDate['exactly'] = str(actualBanDate[3])
+        actualBanDatesNames.append(newActualBanDate)
+
     data = {
         'deadline': {'date': deadline.strftime("%Y-%m-%d %H:%M:%S.%f")},
         'beforeDeadline': beforeDeadline,
-        'actualBanDates': actualBanDates,
-        'banDates': banDates}
+        'actualBanDates': actualBanDatesNames,
+        'banDates': banDatesNames}
 
     return jsonify(data)
 
