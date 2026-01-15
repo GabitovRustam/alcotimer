@@ -396,6 +396,51 @@ def get_region_by_lat_lon():
 
     return jsonify(data)
 
+# Получение таблицы лидеров
+def get_taptheslime_leadership(user_id, user_name, gems, coins):
+
+    # Проверяем, есть ли уже в базе игрок
+    sql = f"SELECT `userid` FROM `players` WHERE `userid`='{user_id}'"
+    cur.execute(sql)
+    player = cur.fetchone()
+
+    # Если такого посетителя еще не было
+    if player is None:
+        cur.execute(f"INSERT INTO `players` SET `userid`='{user_id}'")
+        cnx.commit()
+
+    cur.execute(f"UPDATE `players` SET `username`= '{user_name}', `gems`= {gems}, `coins`= {coins} WHERE `userid`= '{user_id}'")
+    cnx.commit()
+
+    sql = f"SELECT `userid`, `username`, `gems`, `coins` FROM `players` WHERE `userid`= '{user_id}'"
+    cur.execute(sql)
+    player_info = cur.fetchone()
+
+    sql = f"SELECT count(*) FROM `players` WHERE `gems` > {gems} OR (`gems` = {gems} AND `coins` > {coins}) OR (`gems` = {gems} AND `coins` = {coins} AND `userid` > '{user_id}')"
+    cur.execute(sql)
+    player_position = cur.fetchone()[0] + 1
+
+    sql = "SELECT count(*) FROM `players`"
+    cur.execute(sql)
+    all_players_count = cur.fetchone()[0]
+
+    sql = "SELECT `userid`, `username`, `gems`, `coins` FROM `players` ORDER BY `gems` DESC, `coins` DESC, `userid` DESC LIMIT 5"
+    cur.execute(sql)
+    leadership_info = cur.fetchall()
+
+    return {'player': player_info, 'leadership': leadership_info, 'all_players_count': all_players_count, 'player_position': player_position}
+
+@app.route('/taptheslime')
+def taptheslime():
+    user_id = request.args.get('id', 'empty')
+    user_name = request.args.get('name', 'пустой')
+    gems = int(request.args.get('gems', '0'))
+    coins = int(request.args.get('coins', '0'))
+
+    result = get_taptheslime_leadership(user_id, user_name, gems, coins)
+    return str(result)
+
+
 @app.route('/test')
 def test():
     result = get_deadline('Bashkortostan')
