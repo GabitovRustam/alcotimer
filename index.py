@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import json
 from datetime import datetime, timezone, timedelta, date
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -265,7 +266,7 @@ def get_timer(region_code):
 @app.route('/')
 def index():
     title = 'Алкотаймер'
-    description = 'Таймер оставшегося времени до окончания продажи алкоголя'
+    description = 'Таймер оставшегося времени до окончания продажи алкоголя.'
 
     region_code = request.args.get('region', '')
     region_name = ''
@@ -415,6 +416,11 @@ def get_taptheslime_leadership(user_id, user_name, gems, coins):
     sql = f"SELECT `userid`, `username`, `gems`, `coins` FROM `players` WHERE `userid`= '{user_id}'"
     cur.execute(sql)
     player_info = cur.fetchone()
+    player_info_map = {'id': player_info[0],
+                       'name': player_info[1],
+                       'gems': player_info[2],
+                       'coins': player_info[3],
+                       }
 
     sql = f"SELECT count(*) FROM `players` WHERE `gems` > {gems} OR (`gems` = {gems} AND `coins` > {coins}) OR (`gems` = {gems} AND `coins` = {coins} AND `userid` > '{user_id}')"
     cur.execute(sql)
@@ -427,8 +433,13 @@ def get_taptheslime_leadership(user_id, user_name, gems, coins):
     sql = "SELECT `userid`, `username`, `gems`, `coins` FROM `players` ORDER BY `gems` DESC, `coins` DESC, `userid` DESC LIMIT 10"
     cur.execute(sql)
     leadership_info = cur.fetchall()
+    leadership_info_map = [{'id': item[0],
+                       'name': item[1],
+                       'gems': item[2],
+                       'coins': item[3],
+                       } for item in leadership_info]
 
-    return {'player': player_info, 'leadership': leadership_info, 'all_players_count': all_players_count, 'player_position': player_position}
+    return {'player': player_info_map, 'leadership': leadership_info_map, 'all_players_count': all_players_count, 'player_position': player_position}
 
 @app.route('/taptheslime')
 def taptheslime():
@@ -438,7 +449,7 @@ def taptheslime():
     coins = int(request.args.get('coins', '0'))
 
     result = get_taptheslime_leadership(user_id, user_name, gems, coins)
-    return str(result)
+    return json.dumps(result)
 
 
 @app.route('/test')
